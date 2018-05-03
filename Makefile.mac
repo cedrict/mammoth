@@ -5,10 +5,9 @@ F90      = gfortran
 F77      = gfortran
 
 LIBS = \
--llapack -lblas
+-lblas
 
-##-fopenmp \
-##-lpthread -lm 
+#-llapack -lblas
 
 INCLUDE = \
 
