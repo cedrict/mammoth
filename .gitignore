@@ -1,0 +1,8 @@
+fort*
+*.o
+*.a
+OUT/*.dat
+OUT/*.vtu
+MANUAL/*.pdf
+MANUAL/*.out
+
