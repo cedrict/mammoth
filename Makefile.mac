@@ -1,0 +1,16 @@
+FLAGS= -c -O5 -ffree-line-length-none
+#FLAGS= -c  -ffree-line-length-none -Wall -fbounds-check -ffpe-trap=
+FLAGS3   = -c  -ffree-line-length-none -pg -g
+F90      = gfortran
+F77      = gfortran
+
+LIBS = \
+-llapack -lblas
+
+##-fopenmp \
+##-lpthread -lm 
+
+INCLUDE = \
+
+OPTIONS = 
+
