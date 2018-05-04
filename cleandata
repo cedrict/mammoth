@@ -1,5 +1,6 @@
 rm fort.*
 rm OUT/*.vtu
 rm OUT/*.dat
+rm OUT/*.pdf
 
 

@@ -26,6 +26,7 @@ integer nchamber                               ! number of magma chambers
 integer itopo                                  ! type of surface topography
 integer istep,nstep                            !
 integer ipar(16)                               ! params for CG solver
+integer inoode(m)                              !
 integer, dimension(:,:), allocatable :: icon   ! connectivity array
 integer, dimension(:), allocatable :: ipvt     ! work array needed by the solver 
 integer, dimension(:), allocatable :: counting !
@@ -35,10 +36,10 @@ integer, dimension(:), allocatable :: iw       ! cg solver array
                                                !
 integer i1,i2,i,j,k,iel,counter,iq,jq,kq       !
 integer ik,jk,ikk,jkk,m1,m2,k1,k2,info         !
-integer inoode(4),nz,j1,j2,ip,jp,nsees,maxits  !
+integer nz,j1,j2,ip,jp,nsees,maxits            !
 integer output_frequency,inode,jnode           !
 integer size_krylov_subspace,imc,idummy        !
-integer init_temp                              !
+integer init_temp,numarg,option_ID             !
                                                !  
 real(8), parameter :: year=3600d0*24d0*365d0   !
 real(8), parameter :: pi=4.d0*atan(1.d0)       ! 
@@ -89,12 +90,29 @@ logical use_lapack                             !
 logical debug                                  !
                                                !
 character(len=4) cistep                        !
+character(len=255) arg                         !
+character(len=16) inputfile                    !
                                                !
 external cg                                    ! Conjugate Gradient Solver
                                                !
 !==============================================!
 
-open(unit=111,file='input1',action='read')
+write(*,'(a)') '//+++++++++++++++++++++++++++++++++++++++++++++++//'
+write(*,'(a)') '//+++++++++++++++++ MAMMOTH +++++++++++++++++++++//'
+write(*,'(a)') '//+++++++++++++++++++++++++++++++++++++++++++++++//'
+
+numarg = command_argument_count()
+
+if (numarg/=1) stop 'You forgot the input file. Duh.'
+option_ID=1
+call getarg(option_ID,arg)
+read(arg,*) inputfile
+
+print *,'input file: ',trim(inputfile)
+
+!==============================================!
+
+open(unit=111,file=trim(inputfile),action='read')
 open(unit=1000,file="OUT/heat_flux_statistics.dat")
 open(unit=1001,file="OUT/heat_flux_statistics_qz_surface.dat")
 open(unit=1002,file="OUT/temperature_statistics.dat")
@@ -103,9 +121,6 @@ open(unit=1004,file="OUT/dt.dat")
 
 !==============================================!
 
-write(*,'(a)') '(+++++++++++++++++++++++++++++++++++++++)'
-write(*,'(a)') '(++++++++++++++ MAMMOTH ++++++++++++++++)'
-write(*,'(a)') '(+++++++++++++++++++++++++++++++++++++++)'
 
 read(111,*) Lx,Ly,Lz
 read(111,*) nelx,nely,nelz
@@ -459,7 +474,9 @@ do istep=1,nstep
 
 write(cistep,'(I4.4)') istep
 
-print *,'=====> istep='//cistep//'============================='
+write(*,'(a)') '//+++++++++++++++++++++++++++++++++++++++++++++++//'
+write(*,'(a)') '//+++++++++++++ istep='//cistep//'+++++++++++++++++++++++//'
+write(*,'(a)') '//+++++++++++++++++++++++++++++++++++++++++++++++//'
 
 !==============================================!
 !=====[define bc]==============================!
@@ -505,7 +522,9 @@ do iel=1,nel
    Ael=0.d0
    Bel=0.d0
 
-   temp(1:m)=T(icon(1:m,iel))    
+   inoode(1:m)=icon(1:m,iel)
+
+   temp(1:m)=T(inoode)
 
    do iq=-1,1,2
    do jq=-1,1,2
@@ -554,15 +573,15 @@ do iel=1,nel
 
       jcb=0.d0    
       do k=1,8    
-      jcb(1,1)=jcb(1,1)+dNdr(k)*x(icon(k,iel))
-      jcb(1,2)=jcb(1,2)+dNdr(k)*y(icon(k,iel))
-      jcb(1,3)=jcb(1,3)+dNdr(k)*z(icon(k,iel))
-      jcb(2,1)=jcb(2,1)+dNds(k)*x(icon(k,iel))
-      jcb(2,2)=jcb(2,2)+dNds(k)*y(icon(k,iel))
-      jcb(2,3)=jcb(2,3)+dNds(k)*z(icon(k,iel))
-      jcb(3,1)=jcb(3,1)+dNdt(k)*x(icon(k,iel))
-      jcb(3,2)=jcb(3,2)+dNdt(k)*y(icon(k,iel))
-      jcb(3,3)=jcb(3,3)+dNdt(k)*z(icon(k,iel))
+      jcb(1,1)=jcb(1,1)+dNdr(k)*x(inoode(k))
+      jcb(1,2)=jcb(1,2)+dNdr(k)*y(inoode(k))
+      jcb(1,3)=jcb(1,3)+dNdr(k)*z(inoode(k))
+      jcb(2,1)=jcb(2,1)+dNds(k)*x(inoode(k))
+      jcb(2,2)=jcb(2,2)+dNds(k)*y(inoode(k))
+      jcb(2,3)=jcb(2,3)+dNds(k)*z(inoode(k))
+      jcb(3,1)=jcb(3,1)+dNdt(k)*x(inoode(k))
+      jcb(3,2)=jcb(3,2)+dNdt(k)*y(inoode(k))
+      jcb(3,3)=jcb(3,3)+dNdt(k)*z(inoode(k))
       enddo    
     
       jcob=jcb(1,1)*jcb(2,2)*jcb(3,3) &    
@@ -744,19 +763,21 @@ end if
 
 call cpu_time(t2) ; write(*,'(a,f8.3,a)') 'solve system: ',t2-t1,'s'
 
-write(*,'(a,2f10.5,a)') 'T (m/M):',minval(T),maxval(T),' C'
+write(*,'(a,2f10.3,a)') 'T (m/M):',minval(T),maxval(T),' C'
 
 time=time+dt
 
 write(*,'(a,f12.2,a)') 'time=',time/year,' yr'
 
-write(1002,*) time,minval(T),maxval(T),sum(T)/NfemT,istep ; call flush(1002)
+write(1002,*) time/year,minval(T),maxval(T),sum(T)/NfemT,istep ; call flush(1002)
 
 !==============================================!
 !=====[compute heat flux]======================!
 !==============================================!
 
 do iel=1,nel
+
+   inoode(1:m)=icon(1:m,iel)
 
    rq=0
    sq=0
@@ -791,15 +812,15 @@ do iel=1,nel
 
    jcb=0.d0    
    do k=1,8    
-      jcb(1,1)=jcb(1,1)+dNdr(k)*x(icon(k,iel))
-      jcb(1,2)=jcb(1,2)+dNdr(k)*y(icon(k,iel))
-      jcb(1,3)=jcb(1,3)+dNdr(k)*z(icon(k,iel))
-      jcb(2,1)=jcb(2,1)+dNds(k)*x(icon(k,iel))
-      jcb(2,2)=jcb(2,2)+dNds(k)*y(icon(k,iel))
-      jcb(2,3)=jcb(2,3)+dNds(k)*z(icon(k,iel))
-      jcb(3,1)=jcb(3,1)+dNdt(k)*x(icon(k,iel))
-      jcb(3,2)=jcb(3,2)+dNdt(k)*y(icon(k,iel))
-      jcb(3,3)=jcb(3,3)+dNdt(k)*z(icon(k,iel))
+      jcb(1,1)=jcb(1,1)+dNdr(k)*x(inoode(k))
+      jcb(1,2)=jcb(1,2)+dNdr(k)*y(inoode(k))
+      jcb(1,3)=jcb(1,3)+dNdr(k)*z(inoode(k))
+      jcb(2,1)=jcb(2,1)+dNds(k)*x(inoode(k))
+      jcb(2,2)=jcb(2,2)+dNds(k)*y(inoode(k))
+      jcb(2,3)=jcb(2,3)+dNds(k)*z(inoode(k))
+      jcb(3,1)=jcb(3,1)+dNdt(k)*x(inoode(k))
+      jcb(3,2)=jcb(3,2)+dNdt(k)*y(inoode(k))
+      jcb(3,3)=jcb(3,3)+dNdt(k)*z(inoode(k))
    enddo    
     
    jcob=jcb(1,1)*jcb(2,2)*jcb(3,3) &    
@@ -831,9 +852,9 @@ do iel=1,nel
              +jcbi(3,3)*dNdt(k)  
    end do
 
-   dTdx = sum(dNdx(1:m)*T(icon(1:m,iel)))
-   dTdy = sum(dNdy(1:m)*T(icon(1:m,iel)))
-   dTdz = sum(dNdz(1:m)*T(icon(1:m,iel)))
+   dTdx = sum(dNdx(1:m)*T(inoode(1:m)))
+   dTdy = sum(dNdy(1:m)*T(inoode(1:m)))
+   dTdz = sum(dNdz(1:m)*T(inoode(1:m)))
 
    qx(iel)=heat_conductivity*dTdx
    qy(iel)=heat_conductivity*dTdy
@@ -938,7 +959,7 @@ xi=maxval(abs(T-Tss))
 
 write(1003,*) istep,xi,sstolerance ; call flush(1003)
 
-write(*,'(a,es11.4,a,es11.4)') 'xi (C/yr)=',xi,' sstolerance=',sstolerance
+write(*,'(a,f7.2,a,f7.2)') 'xi (C/yr)=',xi,' sstolerance=',sstolerance
 
 if (xi<sstolerance) stop 'steady state reached'
 

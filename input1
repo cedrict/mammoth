@@ -1,5 +1,5 @@
 100d3 100d3 33d3  		! Lx,Ly,Lz
-150 150 50        		! nelx nely nelz
+100 100 33        		! nelx nely nelz
 2800              		! density
 800              		! heat capacity
 2.5               		! heat conductivity
@@ -21,8 +21,4 @@
 4000	10000	8000    4000	! a (m)
 6000 	4000	8000	5000	! b (m)
 6000	4000	3000	6000	! c (m)
-500	500	500	500	! T (C)
-
-
-
-
+500 500 500 500 ! T (C)

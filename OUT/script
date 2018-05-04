@@ -1,0 +1,20 @@
+set term pdf enhanced
+
+set log y
+set xlabel 'istep'
+set output 'xi.pdf'
+plot[][0.1:]\
+'xi.dat' w lp t '{/Symbol x}',\
+'xi.dat' u 1:3 w l lw 2 t 'tolerance'
+
+unset log y
+set xlabel 'time (yr)'
+set output 'temperature_statistics_min.pdf'
+plot[][]\
+'temperature_statistics.dat' u 1:2 w lp t 'min(T)'
+
+set output 'temperature_statistics_max.pdf'
+plot[][]\
+'temperature_statistics.dat' u 1:3 w lp t 'min(T)'
+
+ 

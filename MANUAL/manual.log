@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.2.16)  2 MAY 2018 13:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.2.16)  4 MAY 2018 09:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -201,31 +201,31 @@ Package pdftex.def Info: mammoth.png used on input line 9.
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./mammoth.png>] [2]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 54.
+(Font)              <7> on input line 62.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 54.
+(Font)              <5> on input line 62.
 
 
-LaTeX Warning: Citation `thie11' on page 3 undefined on input line 67.
+LaTeX Warning: Citation `thie11' on page 3 undefined on input line 75.
 
 <grid.png, id=18, 1003.75pt x 780.9175pt>
 File: grid.png Graphic file (type png)
  <use grid.png>
-Package pdftex.def Info: grid.png used on input line 90.
+Package pdftex.def Info: grid.png used on input line 98.
 (pdftex.def)             Requested size: 426.79134pt x 332.0464pt.
  [3 <./grid.png (PNG copy)>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 105.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 113.
 
  (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 105.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 113.
 
 <threechambers.png, id=30, 1003.75pt x 780.9175pt>
 File: threechambers.png Graphic file (type png)
  <use threechambers.png>
-Package pdftex.def Info: threechambers.png used on input line 146.
+Package pdftex.def Info: threechambers.png used on input line 154.
 (pdftex.def)             Requested size: 227.62204pt x 177.08109pt.
 
 [4 <./threechambers.png (PNG copy)>] [5] [6] (./manual.aux)
@@ -255,7 +255,7 @@ fonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><
 /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/s
 hare/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on manual.pdf (6 pages, 303979 bytes).
+Output written on manual.pdf (6 pages, 304803 bytes).
 PDF statistics:
  88 PDF objects out of 1000 (max. 8388607)
  60 compressed objects within 1 object stream
